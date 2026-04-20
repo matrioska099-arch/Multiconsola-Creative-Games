@@ -1,67 +1,16 @@
-let personajes = [];
-
-function preload() {
-  // Cargamos a las tres chicas con los nombres exactos de tu GitHub
-  personajes.push(new Avatar('Sanem.png', 100, 150));
-  personajes.push(new Avatar('Maia.png', 300, 150));
-  personajes.push(new Avatar('Valeria.png', 500, 150));
-}
-
-function setup() {
-  createCanvas(windowWidth, windowHeight);
-}
-
-function draw() {
-  background(255, 245, 235); // Color de fondo cálido
-  
-  // Suelo de la habitación
-  fill(235, 215, 195);
-  noStroke();
-  rect(0, height * 0.7, width, height * 0.3);
-
-  for (let p of personajes) {
-    p.update();
-    p.show();
-  }
-}
-
-class Avatar {
-  constructor(imgName, x, y) {
-    this.img = loadImage(imgName);
-    this.x = x;
-    this.y = y;
-    this.w = 200; 
-    this.h = 300; 
-    this.isDragging = false;
-  }
-
-  show() {
-    image(this.img, this.x, this.y, this.w, this.h);
-  }
-
-  update() {
-    if (this.isDragging) {
-      this.x = mouseX - this.w / 2;
-      this.y = mouseY - this.h / 2;
-    }
-  }
-
-  checkClick() {
-    if (mouseX > this.x && mouseX < this.x + this.w && 
-        mouseY > this.y && mouseY < this.y + this.h) {
-      this.isDragging = true;
-    }
-  }
-
-  stopDragging() {
-    this.isDragging = false;
-  }
-}
-
-function mousePressed() {
-  for (let p of personajes) p.checkClick();
-}
-
-function mouseReleased() {
-  for (let p of personajes) p.stopDragging();
-}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D'Anas Studio</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <style>
+        body { margin: 0; padding: 0; overflow: hidden; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+    <script src="sketch.js"></script>
+</body>
+</html>
