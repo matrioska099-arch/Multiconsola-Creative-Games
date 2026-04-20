@@ -1,27 +1,68 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>D'Anas Studio</title>
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
-    <style> 
-        body { 
-            margin: 0; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            height: 100vh; 
-            background: #faf0e6; 
-            overflow: hidden;
-            touch-action: none; /* Evita que la pantalla se mueva al arrastrar */
-        } 
-    </style>
-</head>
-<body>
-    <script src="sketch.js"></script>
-</body>
-</html>
+let sprites = [];
+
+function setup() {
+  createCanvas(windowWidth, windowHeight);
+  // Creamos a nuestras protagonistas como círculos de colores por ahora
+  // (Luego los cambiaremos por dibujos reales)
+  sprites.push(new Avatar(width/2 - 100, height/2, color(255, 182, 193), "Sanem"));
+  sprites.push(new Avatar(width/2, height/2, color(173, 216, 230), "Maia"));
+  sprites.push(new Avatar(width/2 + 100, height/2, color(221, 160, 221), "Valeria"));
+}
+
+function draw() {
+  background(250, 240, 230); // Fondo crema cálido
+  
+  // Dibujamos el suelo de la "habitación"
+  fill(240, 220, 200);
+  rect(0, height * 0.7, width, height * 0.3);
+
+  // Dibujamos y actualizamos cada personaje
+  for (let s of sprites) {
+    s.show();
+    s.update();
+  }
+}
+
+class Avatar {
+  constructor(x, y, col, name) {
+    this.x = x; this.y = y;
+    this.col = col; this.name = name;
+    this.dragging = false;
+    this.offsetX = 0; this.offsetY = 0;
+  }
+
+  show() {
+    noStroke();
+    fill(this.col);
+    ellipse(this.x, this.y, 70, 70); // Cabeza/Cuerpo
+    fill(0);
+    textAlign(CENTER);
+    textSize(14);
+    text(this.name, this.x, this.y + 55);
+  }
+
+  update() {
+    if (this.dragging) {
+      this.x = mouseX + this.offsetX;
+      this.y = mouseY + this.offsetY;
+    }
+  }
+
+  pressed() {
+    if (dist(mouseX, mouseY, this.x, this.y) < 35) {
+      this.dragging = true;
+      this.offsetX = this.x - mouseX;
+      this.offsetY = this.y - mouseY;
+    }
+  }
+
+  released() { this.dragging = false; }
+}
+
+function mousePressed() {
+  for (let s of sprites) s.pressed();
+}
+
+function mouseReleased() {
+  for (let s of sprites) s.released();
+}
