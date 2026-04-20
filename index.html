@@ -1,68 +1,67 @@
-let sprites = [];
+let personajes = [];
+
+function preload() {
+  // Cargamos a las tres chicas con los nombres exactos de tu GitHub
+  personajes.push(new Avatar('Sanem.png', 100, 150));
+  personajes.push(new Avatar('Maia.png', 300, 150));
+  personajes.push(new Avatar('Valeria.png', 500, 150));
+}
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  // Creamos a nuestras protagonistas como círculos de colores por ahora
-  // (Luego los cambiaremos por dibujos reales)
-  sprites.push(new Avatar(width/2 - 100, height/2, color(255, 182, 193), "Sanem"));
-  sprites.push(new Avatar(width/2, height/2, color(173, 216, 230), "Maia"));
-  sprites.push(new Avatar(width/2 + 100, height/2, color(221, 160, 221), "Valeria"));
 }
 
 function draw() {
-  background(250, 240, 230); // Fondo crema cálido
+  background(255, 245, 235); // Color de fondo cálido
   
-  // Dibujamos el suelo de la "habitación"
-  fill(240, 220, 200);
+  // Suelo de la habitación
+  fill(235, 215, 195);
+  noStroke();
   rect(0, height * 0.7, width, height * 0.3);
 
-  // Dibujamos y actualizamos cada personaje
-  for (let s of sprites) {
-    s.show();
-    s.update();
+  for (let p of personajes) {
+    p.update();
+    p.show();
   }
 }
 
 class Avatar {
-  constructor(x, y, col, name) {
-    this.x = x; this.y = y;
-    this.col = col; this.name = name;
-    this.dragging = false;
-    this.offsetX = 0; this.offsetY = 0;
+  constructor(imgName, x, y) {
+    this.img = loadImage(imgName);
+    this.x = x;
+    this.y = y;
+    this.w = 200; 
+    this.h = 300; 
+    this.isDragging = false;
   }
 
   show() {
-    noStroke();
-    fill(this.col);
-    ellipse(this.x, this.y, 70, 70); // Cabeza/Cuerpo
-    fill(0);
-    textAlign(CENTER);
-    textSize(14);
-    text(this.name, this.x, this.y + 55);
+    image(this.img, this.x, this.y, this.w, this.h);
   }
 
   update() {
-    if (this.dragging) {
-      this.x = mouseX + this.offsetX;
-      this.y = mouseY + this.offsetY;
+    if (this.isDragging) {
+      this.x = mouseX - this.w / 2;
+      this.y = mouseY - this.h / 2;
     }
   }
 
-  pressed() {
-    if (dist(mouseX, mouseY, this.x, this.y) < 35) {
-      this.dragging = true;
-      this.offsetX = this.x - mouseX;
-      this.offsetY = this.y - mouseY;
+  checkClick() {
+    if (mouseX > this.x && mouseX < this.x + this.w && 
+        mouseY > this.y && mouseY < this.y + this.h) {
+      this.isDragging = true;
     }
   }
 
-  released() { this.dragging = false; }
+  stopDragging() {
+    this.isDragging = false;
+  }
 }
 
 function mousePressed() {
-  for (let s of sprites) s.pressed();
+  for (let p of personajes) p.checkClick();
 }
 
 function mouseReleased() {
-  for (let s of sprites) s.released();
+  for (let p of personajes) p.stopDragging();
 }
